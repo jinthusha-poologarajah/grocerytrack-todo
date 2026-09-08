@@ -1,43 +1,55 @@
+
 import { useState } from 'react'
 import './App.css'
 
 function App() {
   const [task, setTask] = useState('')
-  const [tasks, setTasks] = useState([])
+  const [todos, setTodos] = useState([])
 
-  const addTask = (e) => {
-    e.preventDefault()
-
+  const addTodo = () => {
     if (task.trim() === '') {
       return
     }
 
-    setTasks([...tasks, task])
+    setTodos([...todos, task])
     setTask('')
+  }
+
+  const deleteTodo = (index) => {
+    const updatedTodos = todos.filter((_, i) => i !== index)
+    setTodos(updatedTodos)
   }
 
   return (
     <div className="app">
-      <h1>My To-Do List</h1>
+      <h1>My Todo List</h1>
 
-      <form onSubmit={addTask}>
+      <div className="todo-input">
         <input
           type="text"
-          placeholder="Enter a task..."
+          placeholder="Enter a task"
           value={task}
-          onChange={(e) => setTask(e.target.value)}
+          onChange={(event) => setTask(event.target.value)}
         />
 
-        <button type="submit">Add</button>
-      </form>
+        <button onClick={addTodo}>Add</button>
+      </div>
 
-      <ul>
-        {tasks.map((item, index) => (
-          <li key={index}>{item}</li>
+      <div className="todo-list">
+        {todos.map((todo, index) => (
+          <div className="todo-item" key={index}>
+            <span>{todo}</span>
+
+            <button onClick={() => deleteTodo(index)}>
+              Delete
+            </button>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   )
 }
 
 export default App
+
+

@@ -1,39 +1,48 @@
+
 .app {
-  width: 400px;
-  margin: 80px auto;
-  font-family: Arial, sans-serif;
+  width: 500px;
+  margin: 50px auto;
   text-align: center;
+  font-family: Arial, sans-serif;
 }
 
 h1 {
   margin-bottom: 30px;
 }
 
-form {
+.todo-input {
   display: flex;
   gap: 10px;
+  margin-bottom: 30px;
 }
 
-input {
+.todo-input input {
   flex: 1;
   padding: 10px;
   font-size: 16px;
 }
 
-button {
-  padding: 10px 15px;
+.todo-input button {
+  padding: 10px 20px;
   cursor: pointer;
 }
 
-ul {
-  list-style: none;
-  padding: 0;
-  margin-top: 30px;
+.todo-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
-li {
-  background: #f2f2f2;
+.todo-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   padding: 12px;
-  margin-bottom: 10px;
-  text-align: left;
+  border: 1px solid #ccc;
 }
+
+.todo-item button {
+  cursor: pointer;
+  padding: 6px 10px;
+}
+
