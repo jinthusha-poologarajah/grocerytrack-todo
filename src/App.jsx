@@ -1,55 +1,177 @@
-
-import { useState } from 'react'
-import './App.css'
+import { useState } from "react";
+import "./App.css";
 
 function App() {
-  const [task, setTask] = useState('')
-  const [todos, setTodos] = useState([])
+  const [tasks, setTasks] = useState([]);
+  const [input, setInput] = useState("");
+  const [filter, setFilter] = useState("all");
 
-  const addTodo = () => {
-    if (task.trim() === '') {
-      return
+  const addTask = () => {
+    const trimmedInput = input.trim();
+
+    if (trimmedInput === "") {
+      return;
     }
 
-    setTodos([...todos, task])
-    setTask('')
-  }
+    const newTask = {
+      id: Date.now(),
+      text: trimmedInput,
+      completed: false,
+    };
 
-  const deleteTodo = (index) => {
-    const updatedTodos = todos.filter((_, i) => i !== index)
-    setTodos(updatedTodos)
-  }
+    setTasks([...tasks, newTask]);
+    setInput("");
+  };
+
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      addTask();
+    }
+  };
+
+  const toggleTask = (id) => {
+    setTasks(
+      tasks.map((task) =>
+        task.id === id
+          ? { ...task, completed: !task.completed }
+          : task
+      )
+    );
+  };
+
+  const deleteTask = (id) => {
+    setTasks(tasks.filter((task) => task.id !== id));
+  };
+
+  const clearCompleted = () => {
+    setTasks(tasks.filter((task) => !task.completed));
+  };
+
+  const filteredTasks = tasks.filter((task) => {
+    if (filter === "active") {
+      return !task.completed;
+    }
+
+    if (filter === "completed") {
+      return task.completed;
+    }
+
+    return true;
+  });
+
+  const remainingTasks = tasks.filter(
+    (task) => !task.completed
+  ).length;
 
   return (
     <div className="app">
-      <h1>My Todo List</h1>
+      <div className="todo-container">
 
-      <div className="todo-input">
-        <input
-          type="text"
-          placeholder="Enter a task"
-          value={task}
-          onChange={(event) => setTask(event.target.value)}
-        />
+        <header className="todo-header">
+          <h1>My Todo List</h1>
+          <p>Stay organized. Get things done.</p>
+        </header>
 
-        <button onClick={addTodo}>Add</button>
-      </div>
+        <div className="input-section">
+          <input
+            type="text"
+            placeholder="What do you need to do?"
+            value={input}
+            onChange={(event) => setInput(event.target.value)}
+            onKeyDown={handleKeyDown}
+          />
 
-      <div className="todo-list">
-        {todos.map((todo, index) => (
-          <div className="todo-item" key={index}>
-            <span>{todo}</span>
+          <button onClick={addTask}>
+            Add Task
+          </button>
+        </div>
 
-            <button onClick={() => deleteTodo(index)}>
-              Delete
-            </button>
-          </div>
-        ))}
+        <div className="filter-section">
+          <button
+            className={filter === "all" ? "active-filter" : ""}
+            onClick={() => setFilter("all")}
+          >
+            All
+          </button>
+
+          <button
+            className={filter === "active" ? "active-filter" : ""}
+            onClick={() => setFilter("active")}
+          >
+            Active
+          </button>
+
+          <button
+            className={filter === "completed" ? "active-filter" : ""}
+            onClick={() => setFilter("completed")}
+          >
+            Completed
+          </button>
+        </div>
+
+        <div className="task-list">
+
+          {filteredTasks.length === 0 ? (
+            <div className="empty-message">
+              <div className="empty-icon">✓</div>
+              <p>No tasks here.</p>
+              <span>Add a task to get started.</span>
+            </div>
+          ) : (
+            filteredTasks.map((task) => (
+              <div
+                className={`task-item ${
+                  task.completed ? "completed" : ""
+                }`}
+                key={task.id}
+              >
+                <div className="task-left">
+
+                  <button
+                    className="check-button"
+                    onClick={() => toggleTask(task.id)}
+                    aria-label="Complete task"
+                  >
+                    {task.completed ? "✓" : ""}
+                  </button>
+
+                  <span className="task-text">
+                    {task.text}
+                  </span>
+
+                </div>
+
+                <button
+                  className="delete-button"
+                  onClick={() => deleteTask(task.id)}
+                  aria-label="Delete task"
+                >
+                  Delete
+                </button>
+              </div>
+            ))
+          )}
+
+        </div>
+
+        <div className="todo-footer">
+
+          <span>
+            {remainingTasks}{" "}
+            {remainingTasks === 1 ? "task" : "tasks"} remaining
+          </span>
+
+          <button onClick={clearCompleted}>
+            Clear completed
+          </button>
+
+        </div>
+
       </div>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
 
 
