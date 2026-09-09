@@ -2,90 +2,99 @@ import { useState } from "react";
 import "./App.css";
 
 function App() {
-  const [tasks, setTasks] = useState([]);
-  const [input, setInput] = useState("");
+  const [task, setTask] = useState("");
+  const [date, setDate] = useState("");
+  const [todos, setTodos] = useState([]);
   const [filter, setFilter] = useState("all");
 
-  const addTask = () => {
-    const trimmedInput = input.trim();
-
-    if (trimmedInput === "") {
+  // Add a new task
+  const addTodo = () => {
+    if (task.trim() === "" || date === "") {
       return;
     }
 
-    const newTask = {
+    const newTodo = {
       id: Date.now(),
-      text: trimmedInput,
+      text: task,
+      date: date,
       completed: false,
     };
 
-    setTasks([...tasks, newTask]);
-    setInput("");
+    setTodos([...todos, newTodo]);
+
+    // Clear input fields
+    setTask("");
+    setDate("");
   };
 
-  const handleKeyDown = (event) => {
-    if (event.key === "Enter") {
-      addTask();
-    }
-  };
-
-  const toggleTask = (id) => {
-    setTasks(
-      tasks.map((task) =>
-        task.id === id
-          ? { ...task, completed: !task.completed }
-          : task
+  // Complete / uncomplete a task
+  const toggleTodo = (id) => {
+    setTodos(
+      todos.map((todo) =>
+        todo.id === id
+          ? { ...todo, completed: !todo.completed }
+          : todo
       )
     );
   };
 
-  const deleteTask = (id) => {
-    setTasks(tasks.filter((task) => task.id !== id));
+  // Delete a task
+  const deleteTodo = (id) => {
+    setTodos(todos.filter((todo) => todo.id !== id));
   };
 
-  const clearCompleted = () => {
-    setTasks(tasks.filter((task) => !task.completed));
-  };
-
-  const filteredTasks = tasks.filter((task) => {
+  // Filter tasks
+  const filteredTodos = todos.filter((todo) => {
     if (filter === "active") {
-      return !task.completed;
+      return !todo.completed;
     }
 
     if (filter === "completed") {
-      return task.completed;
+      return todo.completed;
     }
 
     return true;
   });
 
-  const remainingTasks = tasks.filter(
-    (task) => !task.completed
+  // Clear completed tasks
+  const clearCompleted = () => {
+    setTodos(todos.filter((todo) => !todo.completed));
+  };
+
+  // Count active tasks
+  const remainingTasks = todos.filter(
+    (todo) => !todo.completed
   ).length;
 
   return (
     <div className="app">
       <div className="todo-container">
 
-        <header className="todo-header">
+        {/* Header */}
+        <div className="todo-header">
           <h1>My Todo List</h1>
-          <p>Stay organized. Get things done.</p>
-        </header>
+          <p>Organize your tasks and stay productive.</p>
+        </div>
 
+        {/* Input section */}
         <div className="input-section">
           <input
             type="text"
-            placeholder="What do you need to do?"
-            value={input}
-            onChange={(event) => setInput(event.target.value)}
-            onKeyDown={handleKeyDown}
+            placeholder="Enter a task..."
+            value={task}
+            onChange={(event) => setTask(event.target.value)}
           />
 
-          <button onClick={addTask}>
-            Add Task
-          </button>
+          <input
+            type="date"
+            value={date}
+            onChange={(event) => setDate(event.target.value)}
+          />
+
+          <button onClick={addTodo}>Add</button>
         </div>
 
+        {/* Filter buttons */}
         <div className="filter-section">
           <button
             className={filter === "all" ? "active-filter" : ""}
@@ -109,63 +118,69 @@ function App() {
           </button>
         </div>
 
+        {/* Task list */}
         <div className="task-list">
-
-          {filteredTasks.length === 0 ? (
+          {filteredTodos.length === 0 ? (
             <div className="empty-message">
               <div className="empty-icon">✓</div>
-              <p>No tasks here.</p>
+              <p>No tasks yet</p>
               <span>Add a task to get started.</span>
             </div>
           ) : (
-            filteredTasks.map((task) => (
+            filteredTodos.map((todo) => (
               <div
                 className={`task-item ${
-                  task.completed ? "completed" : ""
+                  todo.completed ? "completed" : ""
                 }`}
-                key={task.id}
+                key={todo.id}
               >
                 <div className="task-left">
 
+                  {/* Complete button */}
                   <button
                     className="check-button"
-                    onClick={() => toggleTask(task.id)}
-                    aria-label="Complete task"
+                    onClick={() => toggleTodo(todo.id)}
                   >
-                    {task.completed ? "✓" : ""}
+                    {todo.completed ? "✓" : ""}
                   </button>
 
-                  <span className="task-text">
-                    {task.text}
-                  </span>
+                  {/* Task information */}
+                  <div>
+                    <div className="task-text">
+                      {todo.text}
+                    </div>
 
+                    <small className="task-date">
+                      📅 {todo.date}
+                    </small>
+                  </div>
                 </div>
 
+                {/* Delete button */}
                 <button
                   className="delete-button"
-                  onClick={() => deleteTask(task.id)}
-                  aria-label="Delete task"
+                  onClick={() => deleteTodo(todo.id)}
                 >
                   Delete
                 </button>
               </div>
             ))
           )}
-
         </div>
 
-        <div className="todo-footer">
+        {/* Footer */}
+        {todos.length > 0 && (
+          <div className="todo-footer">
+            <span>
+              {remainingTasks} task
+              {remainingTasks !== 1 ? "s" : ""} remaining
+            </span>
 
-          <span>
-            {remainingTasks}{" "}
-            {remainingTasks === 1 ? "task" : "tasks"} remaining
-          </span>
-
-          <button onClick={clearCompleted}>
-            Clear completed
-          </button>
-
-        </div>
+            <button onClick={clearCompleted}>
+              Clear completed
+            </button>
+          </div>
+        )}
 
       </div>
     </div>
@@ -173,5 +188,4 @@ function App() {
 }
 
 export default App;
-
 
