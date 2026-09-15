@@ -72,3 +72,26 @@ If you are developing a production application, we recommend using TypeScript wi
 - Added date selection for tasks.
 - Improved the user interface and styling.
 - Practiced using React useState, event handling, map(), and filter().
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Technologies Used
+
+- React
+- JavaScript
+- HTML
+- CSS
+- Vite
